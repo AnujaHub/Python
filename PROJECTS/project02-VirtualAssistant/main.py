@@ -1,9 +1,10 @@
 import speech_recognition as sr
 import webbrowser
 import pyttsx3
-
+# import musicLib
 
 engine = pyttsx3.init()
+
 
 def speak(text):
     engine.say(text)
@@ -28,14 +29,14 @@ if __name__ == "__main__":
     while True:
         try:
             # Use the microphone as source
-                with sr.Microphone() as source:
-                     print("Listening...")
-                     r.adjust_for_ambient_noise(source, duration=1)
-                     audio = r.listen(source)
-                     wake = r.recognize_google(audio)
+                # with sr.Microphone() as source:
+                #      print("Listening...")
+                    #  r.adjust_for_ambient_noise(source, duration=1)
+                    #  audio = r.listen(source)
+                    #  wake = r.recognize_google(audio)
 
-                     if(wake.lower() == "siri"):
-                         speak(" Yes , how may i help you")
+                    #  if(wake.lower() == "siri"):
+                    #      speak(" Yes , how may i help you")
                  
 
                        # listening for command
