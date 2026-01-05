@@ -1,30 +1,42 @@
+
 import speech_recognition as sr
 import webbrowser
 import pyttsx3
+import win32com.client
 import musicLib
+import time
 
-engine = pyttsx3.init()
+
+
+speaker = win32com.client.Dispatch("SAPI.SpVoice")
 
 
 def speak(text):
-    engine.say(text)
-    engine.runAndWait()
+    speaker.Speak(text)
 
 def processCommand(c):
-    if "open google" in c.lower():
-        webbrowser.open("https://www.google.com")
-    elif "open youtube" in c.lower():
-        webbrowser.open("https://www.youtube.com")
-    elif "open github" in c.lower():
-        webbrowser.open("https://www.github.com")
-    elif c.lower().startswith("play"):
-        song = " ".join(c.lower().split(" ")[1:])
-        link = musicLib.music[song]
-        webbrowser.open(link)
-        speak(f"Playing {song} on Spotify")
-        
-    else:
-        speak("Command not recognized. Please try again.")
+    c = command.lower() 
+
+    sites = {
+        "google": "https://www.google.com",
+        "youtube": "https://www.youtube.com",
+        "github": "https://www.github.com",
+    }
+
+    for key , url in sites.items():
+        if key in c:
+            webbrowser.open(url)
+            speak(f"Opening {key}")
+            return
+    if c.startswith("play"):
+        song = " ".join(c.split(" ")[1:])
+        if song in musicLib.music:
+            webbrowser.open(musicLib.music[song])
+            speak(f"Playing {song} on Spotify")
+        else:
+            speak("song not found")
+        return 
+    speak("Command not recognized. Please try again.")
 
     
 # good practice as it runs only when file is executed directly 
@@ -35,18 +47,18 @@ if __name__ == "__main__":
     while True:
         try:
             # Use the microphone as source
-                # with sr.Microphone() as source:
-                #      print("Listening...")
-                    #  r.adjust_for_ambient_noise(source, duration=1)
-                    #  audio = r.listen(source)
-                    #  wake = r.recognize_google(audio)
+                with sr.Microphone() as source:
+                     print("Listening...")
+                     r.adjust_for_ambient_noise(source, duration=1)
+                     audio = r.listen(source)
+                     wake = r.recognize_google(audio)
 
-                    #  if(wake.lower() == "siri"):
-                    #      speak(" Yes , how may i help you")
-                 
+                if(wake.lower() == "siri"):
+                    speak(" Yes , how may i help you")
+                    time.sleep(0.6)
 
                        # listening for command
-                     with sr.Microphone() as source:
+                    with sr.Microphone() as source:
                         print("Siri Activated...")
                         audio = r.listen(source)
                         command = r.recognize_google(audio)
