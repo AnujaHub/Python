@@ -18,7 +18,7 @@ def processCommand(c):
     elif "open github" in c.lower():
         webbrowser.open("https://www.github.com")
     elif c.lower().startswith("play"):
-        song = c.lower().split(" ")[1]
+        song = " ".join(c.lower().split(" ")[1:])
         link = musicLib.music[song]
         webbrowser.open(link)
         speak(f"Playing {song} on Spotify")

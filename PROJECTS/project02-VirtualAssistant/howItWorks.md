@@ -1,6 +1,7 @@
 The music lib :
 
-song = c.lower().split(" ")[1]
-this creates a list of songs like :
+song = " ".join(c.lower().split(" ")[1:])
+this creates a list of words like :
 [ 'play' , "nazar"]
-now the counting will start from 1 , i.e nazar is the 1st song so tahtw ill be played . 
+now 0 - play 1 - nazar
+# extracts the song name by joining all words after the command
