@@ -1,7 +1,7 @@
 import speech_recognition as sr
 import webbrowser
 import pyttsx3
-# import musicLib
+import musicLib
 
 engine = pyttsx3.init()
 
@@ -17,6 +17,12 @@ def processCommand(c):
         webbrowser.open("https://www.youtube.com")
     elif "open github" in c.lower():
         webbrowser.open("https://www.github.com")
+    elif c.lower().startswith("play"):
+        song = c.lower().split(" ")[1]
+        link = musicLib.music[song]
+        webbrowser.open(link)
+        speak(f"Playing {song} on Spotify")
+        
     else:
         speak("Command not recognized. Please try again.")
 
