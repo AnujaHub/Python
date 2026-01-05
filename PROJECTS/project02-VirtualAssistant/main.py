@@ -1,21 +1,23 @@
-
 import speech_recognition as sr
 import webbrowser
 import pyttsx3
 import win32com.client
 import musicLib
 import time
-
+from dotenv import load_dotenv
+import os
+import requests
 
 
 speaker = win32com.client.Dispatch("SAPI.SpVoice")
-
+load_dotenv("../../env/.env")
+newsApi = os.getenv("NEWS_API")
 
 def speak(text):
     speaker.Speak(text)
 
 def processCommand(c):
-    c = command.lower() 
+    c = c.lower() 
 
     sites = {
         "google": "https://www.google.com",
@@ -28,6 +30,7 @@ def processCommand(c):
             webbrowser.open(url)
             speak(f"Opening {key}")
             return
+        
     if c.startswith("play"):
         song = " ".join(c.split(" ")[1:])
         if song in musicLib.music:
@@ -36,6 +39,24 @@ def processCommand(c):
         else:
             speak("song not found")
         return 
+
+    if "news" in c:
+        try:
+            r = requests.get(f"https://newsapi.org/v2/top-headlines?q=latest&apiKey={newsApi}&pageSize=5")
+            print(r.status_code)
+            r.raise_for_status()
+            news_data = r.json()
+            articles = news_data.get('articles', [])
+            if articles:
+                for article in articles:
+                    speak(article['title'])
+            else:
+                speak("No news articles found.")
+        except requests.exceptions.RequestException:
+            speak("Sorry, I could not fetch the news.")
+        return
+
+    
     speak("Command not recognized. Please try again.")
 
     
