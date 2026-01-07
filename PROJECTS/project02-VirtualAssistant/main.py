@@ -55,7 +55,6 @@ def processCommand(c):
         except requests.exceptions.RequestException:
             speak("Sorry, I could not fetch the news.")
         return
-
     
     speak("Command not recognized. Please try again.")
 
