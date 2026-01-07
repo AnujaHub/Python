@@ -1,20 +1,35 @@
-# from openai import OpenAI
-# from dotenv import load_dotenv
-# import os
+import requests
+import os
+from dotenv import load_dotenv
 
-# load_dotenv("../../env/.env")
-# api = os.getenv("OPENAI_API_KEY")
+load_dotenv("../../env/.env")
 
-# client = OpenAI(
-#     api_key=api
-# )
+def ask_ai(prompt):
+    api = os.getenv("OPENROUTER_API_KEY")
+    if not api:
+        return "API key missing!"
 
-# completion = client.chat.completions.create(
-#     model = "gpt-3.5-turbo",
-#     messages=[
-#         {"role": "system" , "content":"You are a poetic assitant, skilled in explaining complex programming concepts with cretaive flair. "},
-#         {"role": "user", "content":"Compose a poem that explains the concept of recursion in programming"}
-#     ]
-# )
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api}",
+        "HTTP-Referer": "http://localhost",
+        "X-Title": "VirtualAssistant",
+        "Content-Type": "application/json"
+    }
 
-# print(completion.choices[0].message.content)
+    data = {
+        "model": "mistralai/mistral-7b-instruct",
+        "messages": [
+            {"role": "system", "content": "You are a helpful voice assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    }
+
+    try:
+        res = requests.post(url, headers=headers, json=data, timeout=30)
+        res.raise_for_status()  # raise error if not 200
+        return res.json()["choices"][0]["message"]["content"]
+    except requests.exceptions.HTTPError as e:
+        return f"HTTP error: {res.status_code} - {res.text}"
+    except Exception as e:
+        return f"Error: {e}"
